@@ -2,14 +2,13 @@ import sys
 from tkinter import Label, Button, Tk, LEFT
 from typing import Callable
 
-from Countdown.CalendarTest import Test as cttest
 from Countdown.SmartKinterTest import SmartKinterTest
 
 
 class Tester(Tk):
     """A class to make the window of the tester."""
 
-    def __init__(self, ):
+    def __init__(self):
         """Initializes the class. Also creates the other buttons"""
         super().__init__()
         self.label = (Label(self, text='Run Test Commands', font=('Courier New', 36)))
@@ -63,5 +62,4 @@ class Tester(Tk):
 
 tester = Tester()
 tester.gen_test_button(lambda: SmartKinterTest().mainloop(), 'SmartKinterTest')
-tester.gen_test_button(lambda: cttest().mainloop(), 'CalendarTest')
 tester.mainloop()
