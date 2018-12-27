@@ -3,6 +3,7 @@ from tkinter import Label, Button, Tk, LEFT
 from typing import Callable
 
 from Countdown.SmartKinterTest import SmartKinterTest
+from Countdown.timetest import TimeTest
 
 
 class Tester(Tk):
@@ -62,4 +63,5 @@ class Tester(Tk):
 
 tester = Tester()
 tester.gen_test_button(lambda: SmartKinterTest().mainloop(), 'SmartKinterTest')
+tester.gen_test_button(lambda: TimeTest().mainloop(), 'TimeTest')
 tester.mainloop()

@@ -68,5 +68,5 @@ class SmartEntry(tkinter.Entry):
         """
         super().__init__(master, font=(FONT, font_size), **kw)
 
-    def grid(self):
-        super().grid(padx=2, pady=2)
+    def grid(self, **kwargs):
+        super().grid(padx=2, **kwargs)
