@@ -1,9 +1,12 @@
 from datetime import datetime
 from tkinter import Tk
 
+from Countdown import create_logger
 from .SmartKinter import SmartLabel, SmartButton, SmartEntry
 from .consts import second, minute, hour, day, week, month, year
 from .error import TooLittleTimeError, TooMuchTimeError
+
+logger = create_logger('Input Windows')
 
 
 class TimeCalculator(object):
@@ -15,6 +18,7 @@ class TimeCalculator(object):
         :param seconds: The amount of seconds to process
         :type seconds: int
         """
+        self.wordstr = ''
         self.run_main(seconds)
 
     def run_main(self, seconds: int):
@@ -73,11 +77,12 @@ class TimeCalculator(object):
         for k, i in kvpairs:
             if i == 0:
                 del self.timedict[k]
+        logger.debug(self.timedict)
 
     def dict_to_word(self):
-        self.wordstr = ''
         for a, b in self.timedict.items():
             self.wordstr += '%d %s' % (b, a)
+        logger.debug('Word string is %s', self.wordstr)
 
 
 class TimeInput(Tk):
@@ -125,5 +130,8 @@ class TimeInput(Tk):
         self.secs = 0
         for i in range(len(self.rvals)):
             dv = self.labelinputdict[list(self.labelinputdict)[i]].get()
+            logger.debug('Amount: %s, Value: %s, Total: %s', dv, self.rvals[i], self.rvals[i] * int(dv))
             self.secs += self.rvals[i] * int(dv)
+            logger.debug('Seconds: %d', self.secs)
+        self.quit()
         self.destroy()

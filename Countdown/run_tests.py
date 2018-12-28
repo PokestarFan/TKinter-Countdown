@@ -2,10 +2,14 @@ import sys
 from tkinter import Label, Button, Tk, LEFT
 from typing import Callable
 
+from Countdown import create_logger
 from Countdown.SmartKinterTest import SmartKinterTest
 from Countdown.timetest import TimeTest
 
+logger = create_logger('Main')
 
+
+# noinspection PyBroadException
 class Tester(Tk):
     """A class to make the window of the tester."""
 
@@ -17,7 +21,7 @@ class Tester(Tk):
         self.end_button = Button(self, text='Quit', font=('Courier New', 12), command=self.destroy)
         self.end_button.pack(side=LEFT)
         self.buttons = []
-        print('Tester class started')
+        logger.info('Tester class started')
 
     def gen_test_button(self, callback: Callable, name: str) -> None:
         """
@@ -46,20 +50,26 @@ class Tester(Tk):
         """
 
         def temp():
-            print('Running function %s' % name)
-            callback()
-
+            logger.info('Running function %s', name)
+            try:
+                callback()
+            except Exception:
+                logger.exception('Running function %s failed.', name)
         return temp
 
-    def destroy(self):
+    def destroy(self, quitted=False):
         """Destroys the window and exits the process"""
-        super().destroy()
-        sys.exit(0)
+        logger.info('Program exiting')
+        if not quitted:
+            self.quit()
+        else:
+            super().destroy()
+            sys.exit(0)
 
     def quit(self):
         """Linked to destroy."""
-        self.destroy()
-
+        super().quit()
+        self.destroy(quitted=True)
 
 tester = Tester()
 tester.gen_test_button(lambda: SmartKinterTest().mainloop(), 'SmartKinterTest')
