@@ -19,6 +19,7 @@ def wipe_file():
         chdir('logs')
     open('created.txt', 'w').close()
 
+
 # noinspection PyBroadException
 class Tester(Tk):
     """A class to make the window of the tester."""
@@ -66,6 +67,7 @@ class Tester(Tk):
                 callback()
             except Exception:
                 logger.exception('Running function %s failed.', name)
+
         return temp
 
     def destroy(self, quitted=False):
@@ -82,6 +84,7 @@ class Tester(Tk):
         """Linked to destroy."""
         super().quit()
         self.destroy(quitted=True)
+
 
 tester = Tester()
 tester.gen_test_button(lambda: SmartKinterTest().mainloop(), 'SmartKinterTest')
