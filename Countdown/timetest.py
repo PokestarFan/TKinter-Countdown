@@ -2,7 +2,7 @@ from tkinter import Tk
 
 from Countdown import create_logger
 from .SmartKinter import SmartLabel, SmartButton
-from .input_windows import TimeCalculator, TimeInput
+from .input_windows import TimeInput
 
 logger = create_logger('TT')
 
@@ -28,13 +28,12 @@ class TimeTest(Tk):
         self.inp.mainloop()
         logger.debug('Finished mainloop.')
         logger.debug('Seconds: %s', self.inp.secs)
-        self.TC = TimeCalculator(self.inp.secs)
-        logger.debug('Formatted string: %s', self.TC.wordstr)
+        logger.debug('Formatted string: %s', self.inp.format_string)
 
     def get_and_change_time(self):
         """Preforms get_and_retrieve_time and changes the labels with the seconds and formatted string."""
         self.get_and_retrieve_time()
         self.lbl.config(text='%d Seconds' % self.inp.secs)
         logger.debug('Configed? first label')
-        self.lbl2.config(text=self.TC.wordstr)
+        self.lbl2.config(text=self.inp.format_string)
         logger.debug('Configed? second label')

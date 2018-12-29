@@ -2,7 +2,6 @@ from tkinter import Tk
 
 from Countdown import create_logger
 from .SmartKinter import SmartLabel, SmartButton, SmartEntry
-from .consts import second, minute, hour, day, week, month, year
 
 logger = create_logger('Input Windows')
 
@@ -16,11 +15,15 @@ class TimeInput(Tk):
         self.rnum = 1
         self.btn3 = SmartButton(self, text='Quit', command=self.destroy)
         self.btn1 = SmartButton(self, text='Get Seconds and Quit', command=self.get_all_entered_vals)
-        self.vals = ['Years', 'Months', 'Weeks', 'Days', 'Hours', 'Minutes', 'Seconds']
-        self.rvals = [year, month, week, day, hour, minute, second]
+        self.vals = ['Hours', 'Minutes', 'Seconds']
+        self.rvals = [60 * 60, 60, 1]
         self.label1 = SmartLabel(self, text='Input the time.')
         self.build_window()
         self.secs = 0
+        self.seconds = 0
+        self.minutes = 0
+        self.hours = 0
+        self.format_string = ''
 
     def build_window(self):
         """Builds the window."""
@@ -55,5 +58,30 @@ class TimeInput(Tk):
             logger.debug('Amount: %s, Value: %s, Total: %s', dv, self.rvals[i], self.rvals[i] * int(dv))
             self.secs += self.rvals[i] * int(dv)
             logger.debug('Seconds: %d', self.secs)
+        self.seconds_to_hr_min_sec()
         self.quit()
         self.destroy()
+
+    @staticmethod
+    def check_for_both(var):
+        if var == 0:
+            return '%d0:' % var
+        elif 0 < var < 10:
+            return '0%d:' % var
+        else:
+            return '%d:' % var
+
+    def check_and_add(self, var):
+        self.format_string += self.check_for_both(var)
+
+    def add_hr_min_sec(self):
+        self.check_and_add(self.hours)
+        self.check_and_add(self.minutes)
+        self.check_and_add(self.seconds)
+        if self.format_string[-1] == ':':
+            self.format_string = self.format_string[:-1]
+
+    def seconds_to_hr_min_sec(self):
+        self.minutes, self.seconds = divmod(self.secs, 60)
+        self.hours, self.minutes = divmod(self.minutes, 60)
+        self.add_hr_min_sec()

@@ -25,7 +25,7 @@ class SmartLabel(tkinter.Label, LoggingGrid):
     """A Smart Tkinter Label. Automatically packs the label and sets the font to the given font, which also defaults
     to font size 24."""
 
-    def __init__(self, master=None, FONT='Courier New', font_size: int = 24, **kw) -> None:
+    def __init__(self, master=None, FONT='Courier New', font_size: int = 20, **kw) -> None:
         """
         Initializes the class
 

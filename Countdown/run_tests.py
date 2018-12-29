@@ -1,4 +1,6 @@
 import sys
+from os import getcwd, chdir, mkdir
+from os.path import isdir
 from tkinter import Label, Button, Tk, LEFT
 from typing import Callable
 
@@ -8,6 +10,14 @@ from Countdown.timetest import TimeTest
 
 logger = create_logger('Main')
 
+
+def wipe_file():
+    if getcwd().split('\\')[-1] == 'Countdown':
+        chdir('..')
+        if not isdir('logs'):
+            mkdir('logs')
+        chdir('logs')
+    open('created.txt', 'w').close()
 
 # noinspection PyBroadException
 class Tester(Tk):
@@ -21,6 +31,7 @@ class Tester(Tk):
         self.end_button = Button(self, text='Quit', font=('Courier New', 12), command=self.destroy)
         self.end_button.pack(side=LEFT)
         self.buttons = []
+        self.call('wm', 'attributes', '.', '-topmost', True)
         logger.info('Tester class started')
 
     def gen_test_button(self, callback: Callable, name: str) -> None:
@@ -59,11 +70,12 @@ class Tester(Tk):
 
     def destroy(self, quitted=False):
         """Destroys the window and exits the process"""
-        logger.info('Program exiting')
         if not quitted:
             self.quit()
         else:
             super().destroy()
+            wipe_file()
+            logger.info('Program exiting')
             sys.exit(0)
 
     def quit(self):
