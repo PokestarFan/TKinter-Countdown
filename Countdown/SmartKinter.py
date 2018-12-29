@@ -12,6 +12,7 @@ class LoggingGrid(tkinter.Grid):
     """A Grid system that logs all of it's arguments."""
 
     def grid(self, cnf=None, **kw):
+        """The grid function. Logs the creation of a gris to DEBUG."""
         s = ''
         if cnf is None:
             cnf = {}
@@ -26,20 +27,7 @@ class SmartLabel(tkinter.Label, LoggingGrid):
     to font size 24."""
 
     def __init__(self, master=None, FONT='Courier New', font_size: int = 20, **kw) -> None:
-        """
-        Initializes the class
-
-        :param master: ???
-        :param cnf: ???
-        :param FONT: The font family to use
-        :param font_size: The size to make the font
-        :param kw: The optional args that are not explicitly listed.
-        :type master: ???
-        :type cnf: ???
-        :type FONT: str
-        :type font_size: int
-        :type kw: Any
-        """
+        """Initializes the class"""
         super().__init__(master, font=(FONT, font_size), **kw)
         if kw.get('text') is not None:
             logger.debug('Label with text %s was created', kw.get('text'))
@@ -52,20 +40,7 @@ class SmartButton(tkinter.Button, LoggingGrid):
     for it is essentially identical to the setup of the SmartLabel. """
 
     def __init__(self, master=None, FONT='Courier New', font_size: int = 12, **kw) -> None:
-        """
-        Initializes the class
-
-        :param master: ???
-        :param cnf: ???
-        :param FONT: The font family to use
-        :param font_size: The size to make the font
-        :param kw: The optional args that are not explicitly listed.
-        :type master: ???
-        :type cnf: ???
-        :type FONT: str
-        :type font_size: int
-        :type kw: Any
-        """
+        """Initializes the class"""
         if kw.get('command') is None:
             raise ValueError('No command for SmartButton. Keyword is command.')
         super().__init__(master, font=(FONT, font_size), **kw)
@@ -80,20 +55,7 @@ class SmartEntry(tkinter.Entry, LoggingGrid):
     """A Smart Entry. Automatically sets font."""
 
     def __init__(self, master=None, FONT='Courier New', font_size: int = 12, **kw) -> None:
-        """
-        Initializes the class
-
-        :param master: ???
-        :param cnf: ???
-        :param FONT: The font family to use
-        :param font_size: The size to make the font
-        :param kw: The optional args that are not explicitly listed.
-        :type master: ???
-        :type cnf: ???
-        :type FONT: str
-        :type font_size: int
-        :type kw: Any
-        """
+        """Initializes the class"""
         super().__init__(master, font=(FONT, font_size), **kw)
         logger.debug('A field was created.')
 

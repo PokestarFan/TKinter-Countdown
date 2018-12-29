@@ -10,6 +10,7 @@ class TimeInput(Tk):
     """Builds the window to input time."""
 
     def __init__(self):
+        """Initializes the class"""
         super().__init__()
         self.labelinputdict = {}
         self.rnum = 1
@@ -52,6 +53,7 @@ class TimeInput(Tk):
         self.labelinputdict[lbl] = fld
 
     def get_all_entered_vals(self):
+        """Gets all of the entered values and converts them into seconds."""
         self.secs = 0
         for i in range(len(self.rvals)):
             dv = self.labelinputdict[list(self.labelinputdict)[i]].get()
@@ -64,6 +66,8 @@ class TimeInput(Tk):
 
     @staticmethod
     def check_for_both(var):
+        """Checks to see if the number is 0 or a single digit number. If the number is zero than another zero is added.
+        If the number is a single digit number, a zero is added to the front of it."""
         if var == 0:
             return '%d0:' % var
         elif 0 < var < 10:
@@ -72,9 +76,13 @@ class TimeInput(Tk):
             return '%d:' % var
 
     def check_and_add(self, var):
+        """Runs the check function and adds them to the format_string attribute of the class."""
         self.format_string += self.check_for_both(var)
 
     def add_hr_min_sec(self):
+        """Runs check and add on the hours, minutes and seconds attributes. It also deletes the last character of the
+        string if the last character is a colon."""
+        self.format_string = ''
         self.check_and_add(self.hours)
         self.check_and_add(self.minutes)
         self.check_and_add(self.seconds)
@@ -82,6 +90,8 @@ class TimeInput(Tk):
             self.format_string = self.format_string[:-1]
 
     def seconds_to_hr_min_sec(self):
+        """Converts the seconds from the input into seconds, minutes and hours. Also formats them into a string using
+        the add_hr_min_sec function."""
         self.minutes, self.seconds = divmod(self.secs, 60)
         self.hours, self.minutes = divmod(self.minutes, 60)
         self.add_hr_min_sec()

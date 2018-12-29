@@ -12,6 +12,7 @@ logger = create_logger('Main')
 
 
 def wipe_file():
+    """Wipes the file that is used to control the log file name."""
     if getcwd().split('\\')[-1] == 'Countdown':
         chdir('..')
         if not isdir('logs'):
@@ -51,15 +52,7 @@ class Tester(Tk):
 
     @staticmethod
     def run_cb(callback: Callable, name: str):
-        """Runs a function and prints that it was run. Parameters are the same as gen_test_button.
-
-        :param callback: The function to be run
-        :param name: The name of the thing being tested
-        :type callback: Callable
-        :type name: str
-        :return: None
-        :rtype: None
-        """
+        """Runs a function and prints that it was run. Parameters are the same as gen_test_button."""
 
         def temp():
             logger.info('Running function %s', name)
@@ -81,7 +74,7 @@ class Tester(Tk):
             sys.exit(0)
 
     def quit(self):
-        """Linked to destroy."""
+        """Quits mainloop. Linked to destroy."""
         super().quit()
         self.destroy(quitted=True)
 
