@@ -1,41 +1,27 @@
+from abc import ABCMeta, abstractmethod
+from datetime import datetime
 from tkinter import Tk
 
 from Countdown import create_logger
 from .SmartKinter import SmartLabel, SmartButton, SmartEntry
+from .error_boxes import ErrorAndMsg
+from .prefab import exit_widget
 
 logger = create_logger('Input Windows')
 
 
-class TimeInput(Tk):
-    """Builds the window to input time."""
-
+class InputBase(Tk, metaclass=ABCMeta):
     def __init__(self):
-        """Initializes the class"""
+        """Initializes the class and creates the two buttons."""
         super().__init__()
         self.labelinputdict = {}
+        self.entered_values = []
         self.rnum = 1
-        self.btn3 = SmartButton(self, text='Quit', command=self.destroy)
-        self.btn1 = SmartButton(self, text='Get Seconds and Quit', command=self.get_all_entered_vals)
-        self.vals = ['Hours', 'Minutes', 'Seconds']
-        self.rvals = [60 * 60, 60, 1]
-        self.label1 = SmartLabel(self, text='Input the time.')
-        self.build_window()
+        self.btn3 = exit_widget(self)
+        self.btn1 = SmartButton(self, text='Set Time', command=self.get_all_data)
         self.secs = 0
-        self.seconds = 0
-        self.minutes = 0
-        self.hours = 0
-        self.format_string = ''
 
-    def build_window(self):
-        """Builds the window."""
-        self.label1.grid(row=0, column=0, columnspan=3)
-        for i in self.vals:
-            self.build_label_input(row=self.rnum, text=i, largs={'font_size': 12})
-            self.rnum += 1
-        self.btn1.grid(row=self.rnum, columnspan=2)
-        self.btn3.grid(row=self.rnum, column=2)
-
-    def build_label_input(self, row=0, text='', largs=None, fargs=None, lgridargs=None, fgridargs=None):
+    def build_label_input(self, value='', row=0, text='', largs=None, fargs=None, lgridargs=None, fgridargs=None):
         """Builds the label and the input field for it."""
         if lgridargs is None:
             lgridargs = {'column': 0}
@@ -45,24 +31,27 @@ class TimeInput(Tk):
             largs = {}
         if fargs is None:
             fargs = {}
-        lbl = SmartLabel(self, text=text, **largs)
+        lbl = SmartLabel(self, text=text, font_size=12, **largs)
         lbl.grid(row=row, **lgridargs)
         fld = SmartEntry(self, **fargs)
         fld.grid(row=row, **fgridargs)
-        fld.insert(0, '0')
+        fld.insert(0, value)
         self.labelinputdict[lbl] = fld
 
-    def get_all_entered_vals(self):
-        """Gets all of the entered values and converts them into seconds."""
-        self.secs = 0
-        for i in range(len(self.rvals)):
-            dv = self.labelinputdict[list(self.labelinputdict)[i]].get()
-            logger.debug('Amount: %s, Value: %s, Total: %s', dv, self.rvals[i], self.rvals[i] * int(dv))
-            self.secs += self.rvals[i] * int(dv)
-            logger.debug('Seconds: %d', self.secs)
-        self.seconds_to_hr_min_sec()
-        self.quit()
-        self.destroy()
+    def build_window(self):
+        """Builds the window."""
+        self.label1.grid(row=0, column=0, columnspan=3)
+        self.build_iterable()
+        self.btn1.grid(row=self.rnum, columnspan=2)
+        self.btn3.grid(row=self.rnum, column=2)
+
+    @abstractmethod
+    def build_iterable(self):
+        """Builds the window from a list or dictionary"""
+
+    @abstractmethod
+    def get_all_data(self):
+        """Gets all of the values, and convers them to seconds."""
 
     @staticmethod
     def check_for_both(var):
@@ -95,3 +84,75 @@ class TimeInput(Tk):
         self.minutes, self.seconds = divmod(self.secs, 60)
         self.hours, self.minutes = divmod(self.minutes, 60)
         self.add_hr_min_sec()
+
+    def finish(self):
+        """Does seconds_to_hr_min_sec, quits and destroys."""
+        self.seconds_to_hr_min_sec()
+        self.quit()
+        self.destroy()
+
+
+class TimeInput(InputBase):
+    """Builds the window to input time."""
+
+    def __init__(self):
+        """Initializes the class"""
+        super().__init__()
+        self.vals = ['Hours', 'Minutes', 'Seconds']
+        self.rvals = [60 * 60, 60, 1]
+        self.label1 = SmartLabel(self, text='Input the time.')
+        self.build_window()
+        self.secs = self.seconds = self.minutes = self.hours = 0
+        self.format_string = ''
+
+    def build_iterable(self):
+        for i in self.vals:
+            self.build_label_input(row=self.rnum, text=i, value='0')
+            self.rnum += 1
+
+    def get_all_data(self):
+        """Gets all of the entered values and converts them into seconds."""
+        self.secs = 0
+        for i in range(len(self.rvals)):
+            dv = self.labelinputdict[list(self.labelinputdict)[i]].get()
+            logger.debug('Amount: %s, Value: %s, Total: %s', dv, self.rvals[i], self.rvals[i] * int(dv))
+            self.secs += self.rvals[i] * int(dv)
+            logger.debug('Seconds: %d', self.secs)
+        self.finish()
+
+
+class DateInput(InputBase):
+    """A class to input a date to count down to."""
+
+    def __init__(self):
+        """Initalizes the class"""
+        super().__init__()
+        self.lbls = ['Year', 'Month', 'Day', 'Hour', 'Minute', 'Second']
+        self.label1 = SmartLabel(self, text='Input the date.')
+        self.build_window()
+
+    @staticmethod
+    def get_formatted_date():
+        return datetime.now().strftime('%Y-%m-%d-%H-%M-%S').split('-')
+
+    def build_iterable(self):
+        for a, b in dict(zip(self.lbls, self.get_formatted_date())).items():
+            self.build_label_input(value=b, row=self.rnum, text=a)
+            self.rnum += 1
+
+    def get_all_data(self):
+        s = ''
+        for a, b in self.labelinputdict.items():
+            s += b.get()
+        dt = datetime.strptime(s, '%Y%m%d%H%M%S')
+        diff = (dt - datetime.now())
+        logger.debug('DT: %s\nCurrent: %s\nTD: %s\nSeconds: %d' % (dt, datetime.now(), diff, diff.seconds))
+        if diff.days < 0:
+            ErrorAndMsg('Date already happened!').mainloop()
+            self.secs = 0
+            self.finish()
+            self.quit()
+            self.destroy()
+        else:
+            self.secs = diff.seconds
+            self.finish()

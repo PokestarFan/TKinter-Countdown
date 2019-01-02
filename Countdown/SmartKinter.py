@@ -28,6 +28,8 @@ class SmartLabel(tkinter.Label, LoggingGrid):
 
     def __init__(self, master=None, FONT='Courier New', font_size: int = 20, **kw) -> None:
         """Initializes the class"""
+        self.kw = kw
+        logger.debug(kw)
         super().__init__(master, font=(FONT, font_size), **kw)
         if kw.get('text') is not None:
             logger.debug('Label with text %s was created', kw.get('text'))
@@ -41,6 +43,7 @@ class SmartButton(tkinter.Button, LoggingGrid):
 
     def __init__(self, master=None, FONT='Courier New', font_size: int = 12, **kw) -> None:
         """Initializes the class"""
+        self.kw = kw
         if kw.get('command') is None:
             raise ValueError('No command for SmartButton. Keyword is command.')
         super().__init__(master, font=(FONT, font_size), **kw)
@@ -56,6 +59,7 @@ class SmartEntry(tkinter.Entry, LoggingGrid):
 
     def __init__(self, master=None, FONT='Courier New', font_size: int = 12, **kw) -> None:
         """Initializes the class"""
+        self.kw = kw
         super().__init__(master, font=(FONT, font_size), **kw)
         logger.debug('A field was created.')
 

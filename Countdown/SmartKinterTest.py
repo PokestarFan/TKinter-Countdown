@@ -3,6 +3,7 @@
 from tkinter import Tk
 
 from .SmartKinter import SmartButton, SmartLabel
+from .prefab import exit_widget
 
 
 class SmartKinterTest(Tk):
@@ -13,7 +14,7 @@ class SmartKinterTest(Tk):
         self.label.grid(row=0, columnspan=2)
         self.label2.grid(row=1, columnspan=2)
         self.btn1 = SmartButton(self, text='Run Test', command=self.test_run)
-        self.btn2 = SmartButton(self, text='Stop', command=self.destroy)
+        self.btn2 = exit_widget(self, text='Stop')
         self.btn1.grid(row=2, column=1)
         self.btn2.grid(row=2)
 

@@ -2,38 +2,38 @@ from tkinter import Tk
 
 from Countdown import create_logger
 from .SmartKinter import SmartLabel, SmartButton
-from .input_windows import TimeInput
+from .input_windows import TimeInput, DateInput
+from .prefab import exit_widget
 
 logger = create_logger('TT')
 
 
 class TimeTest(Tk):
-    """A Test class for testing the TimeInput and TimeCalculator functions"""
+    """A Test class for testing the TimeInput and DateInput functions"""
     def __init__(self):
         """Initializes the class"""
         super().__init__()
         self.sec = 0
         self.lbl = SmartLabel(self, text='0 Seconds')
         self.lbl2 = SmartLabel(self, text='0 Seconds')
-        self.lbl.grid(columnspan=2)
-        self.lbl2.grid(row=1, columnspan=2)
-        self.btn1 = SmartButton(self, text='Input And Change Time', command=self.get_and_change_time)
+        self.lbl.grid(columnspan=3)
+        self.lbl2.grid(row=1, columnspan=3)
+        self.btn1 = SmartButton(self, text='Input HH/MM/SS', command=lambda: self.get_and_change_time(TimeInput))
         self.btn1.grid(row=2)
-        self.btn2 = SmartButton(self, text='Quit', command=self.destroy)
-        self.btn2.grid(row=2, column=1)
+        self.btn3 = SmartButton(self, text='Input Date', command=lambda: self.get_and_change_time(DateInput))
+        self.btn3.grid(row=2, column=1)
+        self.btn2 = exit_widget(self)
+        self.btn2.grid(row=2, column=2)
 
-    def get_and_retrieve_time(self):
-        """Gets the time with a timeinput and retrieves the seconds from the TimeInput class"""
-        self.inp = TimeInput()
-        self.inp.mainloop()
+    def get_and_change_time(self, input_class):
+        """Gets and changes the time on the label with the given tkinter class of input. """
+        inp = input_class()
+        logger.debug('Input with class %s started' % input_class.__name__)
+        inp.mainloop()
         logger.debug('Finished mainloop.')
-        logger.debug('Seconds: %s', self.inp.secs)
-        logger.debug('Formatted string: %s', self.inp.format_string)
-
-    def get_and_change_time(self):
-        """Preforms get_and_retrieve_time and changes the labels with the seconds and formatted string."""
-        self.get_and_retrieve_time()
-        self.lbl.config(text='%d Seconds' % self.inp.secs)
+        logger.debug('Seconds: %s', inp.secs)
+        logger.debug('Formatted string: %s', inp.format_string)
+        self.lbl.config(text='%d Seconds' % inp.secs)
         logger.debug('Configed? first label')
-        self.lbl2.config(text=self.inp.format_string)
+        self.lbl2.config(text=inp.format_string)
         logger.debug('Configed? second label')
